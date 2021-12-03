@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<style>
+    tr{
+        width:  1000px;
+        height:  200px;
+        border: 2px solid #666;
+    }
+    td{
+        width:  200px;
+        height:  200px;
+        border: 2px solid #666;
+    }
+    .moves {
+        width: 200px;
+        margin: auto;
+        border: 1px solid #333;
+        margin-bottom: 20px;
+    }
+    .moves td {
+        width: 100px;
+        border: 1px solid #333;
+    }
+    .moves tr {
+        border: 1px solid #333;
+    }
+    .cell{
+        background-color:none;
+    }
+    .clean{
+        background-color: #FFFFFF;
+    }
+    .dirty{
+        background-image: url("assets/car.png");
+        background-repeat: no-repeat;
+        background-size: 200px 106px;
+        background-position: 0px 100px;
+    }
+    .bot{
+        background-image: url("assets/gasboy.png");
+        background-size: 200px 200px;
+        background-position: 0px 0px;
+    }
+    .dirtybot{
+        background-image: url("assets/gasboy.png"),url("assets/car.png");
+        background-repeat: no-repeat;
+        background-size: 200px 200px,200px 106px;
+        background-position: 0px 0px,0px 100px;
+    }
+    </style>
+  <head>
+    <meta charset="utf-8">
+    <title>Gas E-Boy</title>
+  </head>
+  <body onload="show_table()">
+    <div style="font-size:100px">
+            GAS E-BOY
+    </div>
+    <p><button onclick="start()"; style="font-size:50px">Apply Heuristic</button></p> 
+    <script src="bot.js"></script>
+  </body>
+</html>
