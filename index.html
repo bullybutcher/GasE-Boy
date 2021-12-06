@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <style>
+    @font-face{
+    font-family: 'Source Code Pro';
+    font-weight: 200;
+    font-style: normal;
+    font-stretch: normal;
+    src: url('./WOFF2/TTF/SourceCodePro-ExtraLight.ttf.woff2') format('woff2'),
+         url('./WOFF/OTF/SourceCodePro-ExtraLight.otf.woff') format('woff'),
+         url('./OTF/SourceCodePro-ExtraLight.otf') format('opentype'),
+         url('./TTF/SourceCodePro-ExtraLight.ttf') format('truetype');
+    }
     .center {
         margin: auto;
         width: 50%;
@@ -57,10 +67,10 @@
     <title>Gas E-Boy</title>
   </head>
   <body onload="show_table()">
-    <div style="font-size:100px;font-family: SourceCodePro"><b>
+    <div class"@font-face"; style="font-size:100px"><b>
             GAS E-BOY
         </b></div>
-    <p><button onclick="start()"; style="font-size:50px;font-family: SourceCodePro"">Apply Heuristic</button></p> 
+    <p><button class"@font-face"; onclick="start()"; style="font-size:50px">Apply Heuristic</button></p> 
     <script src="bot.js"></script>
   </body>
 </html>
