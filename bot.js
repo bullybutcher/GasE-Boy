@@ -1,4 +1,4 @@
-var n = 5;
+var n = 3;
 var grid = "";
 for(let i = 0; i < n; i++){
     for(let j = 0; j <= n; j++){
@@ -18,7 +18,131 @@ for(let i = 0; i < n; i++){
 }
 var r = Math.floor(Math.random() * n);
 var c = Math.floor(Math.random() * n);
+clean = 
+`---
+---
+---
+`;
+opt1 =
+`ddd
+--d
+---`;
+opt2 = 
+`d-d
+ddd
+ddd`;
+//opt1 = 
+//`---
+//d--
+//---`;
+var opts = [opt1, opt2,grid]
+var R = [1, 0, r];
+var C = [1, 1, c];
+var choice = 0;
+grid = opts[choice];
+r = R[choice];
+c = C[choice];
 console.log(grid);
+
+function bfs(){
+    let grid = opts[choice].slice();
+    r = R[choice];
+    c = C[choice];
+    let unempty = 1;
+    let pila = [[grid,[r,c].slice(),[].slice()]];
+    let acts = ["FUEL","LEFT","RIGHT","UP","DOWN"];
+    let best = [];
+    while(Boolean(unempty)){
+        console.log("Dequeuing node");
+        let node = pila.shift().slice();
+        let grrd = node[0].slice();
+        console.log("bakla: \n"+ node[0].slice());
+        if(grrd == clean){
+            console.log("FOUND");
+            unempty = 0;
+            best = node[2].slice();
+            break;
+        }
+        console.log("Expanding node");
+        for(act of acts){
+            let x = node[1][0];
+            let y = node[1][1];
+            if(act == "LEFT"){
+                if(y-1 >= 0){
+                    y = y-1;
+                }
+                else{
+                    continue;
+                }
+            }
+            if(act == "RIGHT"){
+                if(y+1 < n){
+                    y = y+1;
+                }
+                else{
+                    continue;
+                }
+            }
+            if(act == "UP"){
+                if(x-1>=0){
+                    x = x-1;
+                }
+                else{
+                    continue;
+                }
+            }
+            if(act == "DOWN"){
+                if(x+1 < n){
+                    x = x+1;
+                }
+                else{
+                    continue;
+                }
+            }
+            let GRID = grrd;
+            if(act == "FUEL"){
+                GRID = "";
+                let dirt = grrd.split("\n")[x][y];
+                console.log(dirt);
+                if(dirt != 'd'){
+                    continue;
+                }
+                for(let i = 0; i < n; i++){
+                    if(i!=x){
+                        GRID += grrd.split("\n")[i];
+                        GRID += "\n";
+                        continue;
+                    }
+                    for(let j = 0; j <= n; j++){
+                        if(j == n){
+                            GRID += "\n";
+                        }
+                        else{
+                            if(j==y){
+                                GRID += "-";
+                            }
+                            else{
+                                GRID += grrd.split("\n")[i][j];
+                            }
+                        }
+                    }
+                }
+                console.log(GRID);
+            }
+            let nod2 = node[2].slice();
+            let nude = [GRID,[x,y].slice(),nod2];
+            console.log(nude[0]);
+            console.log("node[2]:"+nod2);
+            nude[2].push(act);
+            console.log(nude[2]);
+            console.log("node[1]:"+[x,y]);
+            console.log(nude[1]);
+            console.log("Enqueuing node");
+            pila.push(nude);
+        }
+    }
+    BFSmuve(r,c,best);
+}
 
 
 function nextMove(input) {
@@ -28,19 +152,51 @@ function nextMove(input) {
     var posc = parseInt(input[0].split(" ")[1]);
 
     var mindist = 100000000;
+    var minedge = 100000000;
+    var dirs = [-1,1];
     let move = "DONE";
 
     if(board[posr][posc]=='d'){
         //console.log("CLEAN");
-        return "CLEAN";
+        return "FUEL";
     }
 
-    for(let i = 0; i < board.length; i++){
-        for(let j = 0; j < board[i].length; j++){
+    for(var i = 0; i < board.length; i++){
+        for(var j = 0; j < board[i].length; j++){
             if(board[i][j]=='d'){
+                var edges = 0;
+                for(dir of dirs){
+                    //console.log(i+dir);
+                    if(i+dir < board.length && i+dir >=0){
+                        if(board[i+dir][j] == 'd'){
+                            edges=edges+1;
+                        }
+                    }
+                    if(j+dir < board[i].length && j+dir >=0){
+                        if(board[i][j+dir] == 'd'){
+                            edges=edges+1;
+                        }
+                    }
+                }
                 var dist = Math.abs(posr-i) + Math.abs(posc-j);
                 if(dist < mindist){
                     mindist = dist;
+                    minedge = edges;
+                    if(posc-j<0){
+                        move = "RIGHT";
+                    }
+                    else if(posc-j>0){
+                        move = "LEFT";
+                    }
+                    if(posr-i<0){
+                        move = "DOWN";
+                    }
+                    else if(posr-i>0){
+                        move = "UP";
+                    }
+                }
+                else if(dist == mindist && edges < minedge){
+                    minedge = edges;
                     if(posc-j<0){
                         move = "RIGHT";
                     }
@@ -59,7 +215,7 @@ function nextMove(input) {
     }
     //console.log(move);
     return move;
-} 
+}
 
 function game(move){
     if(move == "LEFT"){
@@ -82,7 +238,7 @@ function game(move){
             r = r+1;
         }
     }
-    if(move == "CLEAN"){
+    if(move == "FUEL"){
         var GRID = "";
         for(let i = 0; i < n; i++){
             if(i!=r){
@@ -187,12 +343,37 @@ function myMuve(input) {
     }
   }
 }
+
+function BFSmuve(rr, cc, best){
+    let id = null;
+    const rows = document.getElementsByTagName("tr");   
+    clearInterval(id);
+    id = setInterval(frame, 500);
+    //generate_table(game(""));
+    var Input = "";
+    r = rr;
+    c = cc;
+    Input += rr.toString()+" "+cc.toString()+"\n";
+    Input += grid;
+    var k = 0;
+    function frame() {
+      console.log(best[k]);
+      var _input = game(best[k]);
+      k++;
+      var tabl = document.getElementsByTagName("table")[0].remove();
+      generate_table(_input);
+      if(k == best.length){
+          clearInterval(id);
+      }
+    }
+}
 function show_table(){
     generate_table(game(""));
 }
 function start(){
     myMuve(game(""));
 }
+
 
 
 
