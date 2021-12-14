@@ -43,6 +43,7 @@ grid = opts[choice];
 r = R[choice];
 c = C[choice];
 var hsteps = 0;
+var galaw = 0;
 //console.log(grid);
 
 function bfs(){
@@ -207,6 +208,7 @@ function nextMove(input) {
     if(board[posr][posc]=='d'){
         console.log("Check if current cell is occupied... Occupied, FUEL the car");
         hsteps++;
+        galaw++;
         return "FUEL";
     }
     console.log("Scanning grid for nearest occupied cell with the least adjacent occupied cells");
@@ -267,12 +269,14 @@ function nextMove(input) {
         console.log("Found target occupied cell");
         hsteps++;
         console.log("Move " + move);
+        galaw++;
         hsteps++;
     }
     else{
         console.log("Goal state check: pass");
         hsteps++;
-        console.log("Solution found in "+hsteps+" steps")
+        console.log("Solution found in "+hsteps+" steps");
+        console.log("Solution take "+galaw+" moves");
     }
     return move;
 }
@@ -391,9 +395,7 @@ function myMuve(input) {
   id = setInterval(frame, 500);
   let muve = "";
   //generate_table(Input);
-  let galaw = 0;
   function frame() {
-    galaw++;
     var _input = game(muve);
     var tabl = document.getElementsByTagName("table")[0].remove();
     generate_table(_input);
@@ -403,7 +405,6 @@ function myMuve(input) {
         clearInterval(id);
     }
   }
-  console.log("Solution takes "+galaw+" moves");
 }
 
 function BFSmuve(rr, cc, best){
@@ -436,6 +437,7 @@ function start(){
     r = R[choice];
     c = C[choice];
     hsteps = 0;
+    galaw = 0;
     console.log("Heuristic");
     myMuve(game(""));
 }
