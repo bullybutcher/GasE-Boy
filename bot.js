@@ -38,33 +38,42 @@ ddd`;
 var opts = [opt1, opt2,grid]
 var R = [1, 0, r];
 var C = [1, 1, c];
-var choice = 1;
+var choice = 0;
 grid = opts[choice];
 r = R[choice];
 c = C[choice];
-console.log(grid);
+var hsteps = 0;
+//console.log(grid);
 
 function bfs(){
-    let grid = opts[choice].slice();
+    console.log("BFS");
+    grid = opts[choice].slice();
     r = R[choice];
     c = C[choice];
     let unempty = 1;
     let pila = [[grid,[r,c].slice(),[].slice(),[r,c].slice()]];
     let acts = ["FUEL","LEFT","RIGHT","UP","DOWN"];
     let best = [];
+    let step = 0;
     while(Boolean(unempty)){
         console.log("Dequeuing node");
+        step++;
         let node = pila.shift().slice();
         let grrd = node[0].slice();
         let prev = node[3].slice();
-        console.log("bakla: \n"+ node[0].slice());
+        console.log("Goal checking the node " + node[2]);
+        step++
         if(grrd == clean){
-            console.log("FOUND");
+            console.log("Goal check = pass");
+            step++
             unempty = 0;
             best = node[2].slice();
             break;
         }
+        console.log("Goal check = fail");
+        step++
         console.log("Expanding node");
+        step++
         for(act of acts){
             let x = node[1][0];
             let y = node[1][1];
@@ -74,10 +83,14 @@ function bfs(){
                 if(y-1 >= 0){
                     y = y-1;
                     if(y==prev[1]){
+                        console.log("This move just goes back to where agent was one move ago. Don't enqueue.");
+                        step++;
                         continue;
                     }
                 }
                 else{
+                    console.log("This move goes out of the grid. Don't enqueue");
+                    step++;
                     continue;
                 }
             }
@@ -85,10 +98,14 @@ function bfs(){
                 if(y+1 < n){
                     y = y+1;
                     if(y==prev[1]){
+                        console.log("This move just goes back to where agent was one move ago. Don't enqueue.");
+                        step++;
                         continue;
                     }
                 }
                 else{
+                    console.log("This move goes out of the grid. Don't enqueue");
+                    step++;
                     continue;
                 }
             }
@@ -96,10 +113,14 @@ function bfs(){
                 if(x-1>=0){
                     x = x-1;
                     if(x==prev[0]){
+                        console.log("This move just goes back to where agent was one move ago. Don't enqueue.");
+                        step++;
                         continue;
                     }
                 }
                 else{
+                    console.log("This move goes out of the grid. Don't enqueue");
+                    step++;
                     continue;
                 }
             }
@@ -107,10 +128,14 @@ function bfs(){
                 if(x+1 < n){
                     x = x+1;
                     if(x==prev[0]){
+                        console.log("This move just goes back to where agent was one move ago. Don't enqueue.");
+                        step++;
                         continue;
                     }
                 }
                 else{
+                    console.log("This move goes out of the grid. Don't enqueue");
+                    step++;
                     continue;
                 }
             }
@@ -119,8 +144,10 @@ function bfs(){
             if(act == "FUEL"){
                 GRID = "";
                 let dirt = grrd.split("\n")[x][y];
-                console.log(dirt);
+                //console.log(dirt);
                 if(dirt != 'd'){
+                    console.log("This move just goes back to where agent was one move ago. Don't enqueue.")
+                    step++;
                     continue;
                 }
                 isDirt = 1;
@@ -144,23 +171,22 @@ function bfs(){
                         }
                     }
                 }
-                console.log(GRID);
+                //console.log(GRID);
             }
             let nod2 = node[2].slice();
             let nude = [GRID,[x,y].slice(),nod2,[X,Y].slice()];
-            console.log(nude[0]);
-            console.log("node[2]:"+nod2);
             nude[2].push(act);
-            console.log(nude[2]);
-            console.log("node[1]:"+[x,y]);
-            console.log(nude[1]);
-            console.log("Enqueuing node");
             pila.push(nude);
+            console.log("Enqueueing node " + nude[2]);
+            step++;
             if(Boolean(isDirt)){
+                console.log("Current node is occupied, other moves will not be explored");
+                step++;
                 break;
             }
         }
     }
+    console.log("Solution found in "+step+" steps");
     BFSmuve(r,c,best);
 }
 
@@ -175,12 +201,13 @@ function nextMove(input) {
     var minedge = 100000000;
     var dirs = [-1,1];
     let move = "DONE";
-
     if(board[posr][posc]=='d'){
-        //console.log("CLEAN");
+        console.log("Check if current cell is occupied... Occupied, FUEL the car");
+        hsteps++;
         return "FUEL";
     }
-
+    console.log("Scanning grid for nearest occupied cell with the least adjacent occupied cells");
+    hsteps++;
     for(var i = 0; i < board.length; i++){
         for(var j = 0; j < board[i].length; j++){
             if(board[i][j]=='d'){
@@ -233,7 +260,17 @@ function nextMove(input) {
             }
         }
     }
-    //console.log(move);
+    if (move != "DONE"){
+        console.log("Found target occupied cell");
+        hsteps++;
+        console.log("Move " + move);
+        hsteps++;
+    }
+    else{
+        console.log("Goal state check: pass");
+        hsteps++;
+        console.log("Solution found in "+hsteps+" steps")
+    }
     return move;
 }
 
@@ -285,7 +322,7 @@ function game(move){
     var input = "";
     input += r.toString()+" "+c.toString()+"\n";
     input += grid;
-    console.log(input);
+    //console.log(input);
     return input;
 }
 
@@ -346,8 +383,7 @@ function myMuve(input) {
     var board = input.slice(1,input.length);
     var posr = parseInt(input[0].split(" ")[0]);
     var posc = parseInt(input[0].split(" ")[1]);
-  let id = null;
-  const rows = document.getElementsByTagName("tr");   
+  let id = null;  
   clearInterval(id);
   id = setInterval(frame, 500);
   let muve = "";
@@ -357,7 +393,7 @@ function myMuve(input) {
     var tabl = document.getElementsByTagName("table")[0].remove();
     generate_table(_input);
     muve = nextMove(_input);
-    console.log(muve);
+    //console.log(muve);
     if(muve == "DONE"){
         clearInterval(id);
     }
@@ -365,11 +401,12 @@ function myMuve(input) {
 }
 
 function BFSmuve(rr, cc, best){
-    let id = null;
-    const rows = document.getElementsByTagName("tr");   
+    let id = null;   
     clearInterval(id);
     id = setInterval(frame, 500);
     //generate_table(game(""));
+    var tabL = document.getElementsByTagName("table")[0].remove();
+    generate_table(game(""));
     var Input = "";
     r = rr;
     c = cc;
@@ -377,7 +414,7 @@ function BFSmuve(rr, cc, best){
     Input += grid;
     var k = 0;
     function frame() {
-      console.log(best[k]);
+      //console.log(best[k]);
       var _input = game(best[k]);
       k++;
       var tabl = document.getElementsByTagName("table")[0].remove();
@@ -391,7 +428,37 @@ function show_table(){
     generate_table(game(""));
 }
 function start(){
+    grid = opts[choice];
+    r = R[choice];
+    c = C[choice];
+    hsteps = 0;
+    console.log("Heuristic");
     myMuve(game(""));
+}
+
+function choose0(){
+    choice = 0;
+    grid = opts[choice];
+    r = R[choice];
+    c = C[choice];
+    var tabL = document.getElementsByTagName("table")[0].remove();
+    generate_table(game(""));
+}
+function choose1(){
+    choice = 1;
+    grid = opts[choice];
+    r = R[choice];
+    c = C[choice];
+    var tabL = document.getElementsByTagName("table")[0].remove();
+    generate_table(game(""));
+}
+function chooseRandom(){
+    choice = 2;
+    grid = opts[choice];
+    r = R[choice];
+    c = C[choice];
+    var tabL = document.getElementsByTagName("table")[0].remove();
+    generate_table(game(""));
 }
 
 
