@@ -38,7 +38,7 @@ ddd`;
 var opts = [opt1, opt2,grid]
 var R = [1, 0, r];
 var C = [1, 1, c];
-var choice = 0;
+var choice = 1;
 grid = opts[choice];
 r = R[choice];
 c = C[choice];
@@ -49,13 +49,14 @@ function bfs(){
     r = R[choice];
     c = C[choice];
     let unempty = 1;
-    let pila = [[grid,[r,c].slice(),[].slice()]];
+    let pila = [[grid,[r,c].slice(),[].slice(),[r,c].slice()]];
     let acts = ["FUEL","LEFT","RIGHT","UP","DOWN"];
     let best = [];
     while(Boolean(unempty)){
         console.log("Dequeuing node");
         let node = pila.shift().slice();
         let grrd = node[0].slice();
+        let prev = node[3].slice();
         console.log("bakla: \n"+ node[0].slice());
         if(grrd == clean){
             console.log("FOUND");
@@ -67,9 +68,14 @@ function bfs(){
         for(act of acts){
             let x = node[1][0];
             let y = node[1][1];
+            let X = x;
+            let Y = y;
             if(act == "LEFT"){
                 if(y-1 >= 0){
                     y = y-1;
+                    if(y==prev[1]){
+                        continue;
+                    }
                 }
                 else{
                     continue;
@@ -78,6 +84,9 @@ function bfs(){
             if(act == "RIGHT"){
                 if(y+1 < n){
                     y = y+1;
+                    if(y==prev[1]){
+                        continue;
+                    }
                 }
                 else{
                     continue;
@@ -86,6 +95,9 @@ function bfs(){
             if(act == "UP"){
                 if(x-1>=0){
                     x = x-1;
+                    if(x==prev[0]){
+                        continue;
+                    }
                 }
                 else{
                     continue;
@@ -94,12 +106,16 @@ function bfs(){
             if(act == "DOWN"){
                 if(x+1 < n){
                     x = x+1;
+                    if(x==prev[0]){
+                        continue;
+                    }
                 }
                 else{
                     continue;
                 }
             }
             let GRID = grrd;
+            let isDirt = 0;
             if(act == "FUEL"){
                 GRID = "";
                 let dirt = grrd.split("\n")[x][y];
@@ -107,6 +123,7 @@ function bfs(){
                 if(dirt != 'd'){
                     continue;
                 }
+                isDirt = 1;
                 for(let i = 0; i < n; i++){
                     if(i!=x){
                         GRID += grrd.split("\n")[i];
@@ -130,7 +147,7 @@ function bfs(){
                 console.log(GRID);
             }
             let nod2 = node[2].slice();
-            let nude = [GRID,[x,y].slice(),nod2];
+            let nude = [GRID,[x,y].slice(),nod2,[X,Y].slice()];
             console.log(nude[0]);
             console.log("node[2]:"+nod2);
             nude[2].push(act);
@@ -139,6 +156,9 @@ function bfs(){
             console.log(nude[1]);
             console.log("Enqueuing node");
             pila.push(nude);
+            if(Boolean(isDirt)){
+                break;
+            }
         }
     }
     BFSmuve(r,c,best);
