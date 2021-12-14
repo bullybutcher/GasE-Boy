@@ -50,6 +50,8 @@ function bfs(){
     grid = opts[choice].slice();
     r = R[choice];
     c = C[choice];
+    var tabL = document.getElementsByTagName("table")[0].remove();
+    generate_table(game(""));
     let unempty = 1;
     let pila = [[grid,[r,c].slice(),[].slice(),[r,c].slice()]];
     let acts = ["FUEL","LEFT","RIGHT","UP","DOWN"];
@@ -187,6 +189,7 @@ function bfs(){
         }
     }
     console.log("Solution found in "+step+" steps");
+    console.log("Solution takes "+best.length+" moves");
     BFSmuve(r,c,best);
 }
 
@@ -388,7 +391,9 @@ function myMuve(input) {
   id = setInterval(frame, 500);
   let muve = "";
   //generate_table(Input);
+  let galaw = 0;
   function frame() {
+    galaw++;
     var _input = game(muve);
     var tabl = document.getElementsByTagName("table")[0].remove();
     generate_table(_input);
@@ -398,6 +403,7 @@ function myMuve(input) {
         clearInterval(id);
     }
   }
+  console.log("Solution takes "+galaw+" moves");
 }
 
 function BFSmuve(rr, cc, best){
@@ -405,8 +411,6 @@ function BFSmuve(rr, cc, best){
     clearInterval(id);
     id = setInterval(frame, 500);
     //generate_table(game(""));
-    var tabL = document.getElementsByTagName("table")[0].remove();
-    generate_table(game(""));
     var Input = "";
     r = rr;
     c = cc;
